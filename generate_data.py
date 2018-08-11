@@ -1,7 +1,5 @@
 """
 Written by Jun Hao Hu. All rights reserved.
-
-Here is an edit that has been made. Has this reflected on Github?
 """
 
 import cv2
