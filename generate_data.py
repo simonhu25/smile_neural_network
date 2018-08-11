@@ -1,5 +1,7 @@
 """
 Written by Jun Hao Hu. All rights reserved.
+
+Here is an edit that has been made. Has this reflected on Github?
 """
 
 import cv2
@@ -74,5 +76,3 @@ def create_label_array(file_path):
         label_test : numpy array
             Numpy array containing the testing labels.
     """
-
-    
