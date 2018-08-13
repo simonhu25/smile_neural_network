@@ -8,9 +8,11 @@ import csv
 from sklearn.model_selection import train_test_split
 import glob
 
-num_images = 13718
+NUM_IMAGES = 13718
+SPLIT_INDEX = int(np.floor(NUM_IMAGES*0.80))
+RANDOM_STATE = 42
 
-def create_data_array(image_files):
+def create_data_array(image_path):
     """
     Creates the data array for feeding into the CNN.
 
@@ -27,28 +29,14 @@ def create_data_array(image_files):
     Returns
     -------
 
-        x_train : numpy array
-            Numpy array containing all the training images.
-
-        x_val : numpy array
-            Numpy array containing all the validation images.
-
-        x_test : numpy array
-            Numpy array containing all the testing images.
+        data : numpy array
+            A numpy array that stores all the image data from the dataset.
     """
 
-    image_files = glob.glob('./datasets_sandbox/images/*')
+    image_files = glob.glob(image_path)
     data = np.array([np.array(cv2.imread(file,0)) for file in image_files])
 
-    index = int(np.floor(num_images*0.80))
-
-    x_train = data[0:index]
-    x_test = data[index:num_images+1]
-
-    x_val = x_train[0:index]
-    x_train = x_train[index:x_train.shape[0]+1]
-
-    return x_train,x_val,x_test
+    return data
 
 def create_label_array(file_path):
     """
@@ -65,12 +53,26 @@ def create_label_array(file_path):
     Returns
     -------
 
-        label_train : numpy array
-            Numpy array containing the training labels.
-
-        label_val : numpy array
-            Numpy array containing the validation labels.
-
-        label_test : numpy array
-            Numpy array containing the testing labels.
+        labels : Dictionary
     """
+
+    emotions = []
+
+    # Import the labeled emotions and append them to 'emotions'.
+
+    with open(file_path,newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            emotions.append(row['emotion'])
+
+    # Use one-hot encoding to encode these emotions.
+
+    labels = to_categorical(emotions)
+
+    return labels
+
+def main():
+    data = create_data_array('./datasets_sandbox/images/*')
+    labels = create_label_array('./datasets_sandbox/data/legend.csv')
+    print(data.shape)
+    print(labels.shape)
